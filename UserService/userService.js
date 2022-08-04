@@ -2,8 +2,7 @@ import User from "../model/userModel.js";
 import brcypt from "bcrypt";
 
 class userService {
-  async handleUserRegistration(req, res, next) {
-    const { username, email, password } = req.body;
+  async handleUserRegistration(username, email, password) {
     const usernameCheck = await User.findOne(username);
 
     if (usernameCheck) {
@@ -28,25 +27,21 @@ class userService {
     return { status: true, user };
   }
 
-  async handleUserLogin(req, res, next) {
-    const { username, password } = req.body;
+  async handleUserLogin(username, password) {
     const stringUsername = JSON.stringify(username);
     const stringPassword = JSON.stringify(password);
 
-    const dbUser = await User.findOne({ username });
+    const dbUser = await User.findOne({ stringUsername });
 
     if (!dbUser) {
-      return res.join({ msg: "Incorrect username or password", status: false });
+      return { msg: "Incorrect username or password", status: false };
     }
     const isPasswordValid = await brcypt.compare(
       stringPassword,
       dbUser.password
     );
     if (isPasswordValid) {
-      return res.join({
-        msg: "Incorrect username or passwordaaa",
-        status: false,
-      });
+      return { msg: "Incorrect username or password", status: false };
     }
     delete user.password;
 
