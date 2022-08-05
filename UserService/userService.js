@@ -40,12 +40,43 @@ class userService {
       stringPassword,
       dbUser.password
     );
-    if (isPasswordValid) {
+    if (!isPasswordValid) {
       return { msg: "Incorrect username or password", status: false };
     }
-    delete user.password;
+    delete dbUser.password;
 
-    return { status: true, user };
+    return { status: true, dbUser };
+  }
+
+  async handleChangeAvatar(userId, avatarImage) {
+    try {
+      const userData = await User.findByIdAndUpdate(
+        userId,
+        {
+          isAvatarImageSet: true,
+          avatarImage,
+        },
+        { new: true }
+      );
+      return res.json({
+        isSet: userData.isAvatarImageSet,
+        image: userData.avatarImage,
+      });
+    } catch (ex) {
+      next(ex);
+    }
+  }
+
+  async setAvatar(userId, avatarImage, userData) {
+    try {
+      const userData = await User.findById(userId, {
+        isAvatarImageSet: true,
+        avatarImage,
+      });
+      return { isSet: userData.isAvatarImageSet, image: userData.avatarImage };
+    } catch (error) {
+      next(error);
+    }
   }
 }
 

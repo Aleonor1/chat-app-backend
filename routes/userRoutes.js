@@ -18,7 +18,15 @@ router.post("/login", async (req, res, next) => {
   try {
     const { username, password } = req.body;
     const uService = new userService();
-    res.json(uService.handleUserLogin(username, password));
+    res.json(await uService.handleUserLogin(username, password));
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+router.post("/setAvatar:id", async (req, res, next) => {
+  try {
+    res.json("test");
   } catch (error) {
     console.log(error);
   }
